@@ -1,13 +1,24 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Bot, Loader2, Send, User } from 'lucide-react'
 import axios from 'axios'
 
+const STORAGE_KEY = 'ai_chatbot_messages'
+
 function AIChatbotTab() {
-  const [messages, setMessages] = useState([
-    { sender: 'bot', text: 'Hi! I\'m a placeholder chatbot. Ask me anything!' },
-  ])
+  const [messages, setMessages] = useState(() => {
+    const saved = sessionStorage.getItem(STORAGE_KEY)
+    return saved
+      ? JSON.parse(saved)
+      : [
+          { sender: 'bot', text: 'Hello! I am your AI assistant. How can I help you today?' },
+        ]
+  })
   const [input, setInput] = useState('')
   const [isLoading, setIsLoading] = useState(false)
+
+  useEffect(() => {
+    sessionStorage.setItem(STORAGE_KEY, JSON.stringify(messages))
+  }, [messages])
 
   const handleSend = async () => {
     const trimmed = input.trim()
@@ -18,7 +29,7 @@ function AIChatbotTab() {
     setIsLoading(true)
 
     try {
-      const res = await axios.post("/api/chat", { message: trimmed })
+      const res = await axios.post("/api/test_chat", { message: trimmed })
 
       setMessages((prev) => [...prev, {sender: 'bot', text: res.data.reply}])
     } catch (err) {
