@@ -1,27 +1,33 @@
 import { useState } from 'react'
-import { Bot, Send, User } from 'lucide-react'
+import { Bot, Loader2, Send, User } from 'lucide-react'
+import axios from 'axios'
 
 function AIChatbotTab() {
   const [messages, setMessages] = useState([
     { sender: 'bot', text: 'Hi! I\'m a placeholder chatbot. Ask me anything!' },
   ])
   const [input, setInput] = useState('')
+  const [isLoading, setIsLoading] = useState(false)
 
-  const handleSend = () => {
+  const handleSend = async () => {
     const trimmed = input.trim()
     if (!trimmed) return
 
     setMessages((prev) => [...prev, { sender: 'user', text: trimmed }])
     setInput('')
+    setIsLoading(true)
 
-    // TODO: Replace this block with actual API call to FastAPI backend, e.g.:
-    // const res = await fetch('/api/chat', { method: 'POST', body: JSON.stringify({ message: trimmed }) });
-    // const data = await res.json();
-    // setMessages(prev => [...prev, { sender: 'bot', text: data.reply }]);
-    setMessages((prev) => [
-      ...prev,
-      { sender: 'bot', text: 'This is a placeholder response.' },
-    ])
+    try {
+      const res = await axios.post("/api/chat", { message: trimmed })
+
+      setMessages((prev) => [...prev, {sender: 'bot', text: res.data.reply}])
+    } catch (err) {
+      console.error(err)
+
+      setMessages((prev) => [...prev, { sender: 'bot', text: 'Oops! Something went wrong. Please try again later.' }])
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   const handleKeyDown = (e) => {
@@ -37,28 +43,32 @@ function AIChatbotTab() {
         {messages.map((msg, i) => (
           <div
             key={i}
-            className={`flex items-start gap-2 ${
-              msg.sender === 'user' ? 'flex-row-reverse' : ''
-            }`}
+            className={`flex items-start gap-2 ${msg.sender === 'user' ? 'flex-row-reverse' : ''}`}
           >
             <div
-              className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full ${
-                msg.sender === 'user' ? 'bg-third text-fourth' : 'bg-fourth text-first'
-              }`}
+              className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full ${msg.sender === 'user' ? 'bg-third text-fourth' : 'bg-fourth text-first'}`}
             >
               {msg.sender === 'user' ? <User size={14} /> : <Bot size={14} />}
             </div>
             <p
-              className={`max-w-[75%] rounded-lg px-3 py-2 text-sm ${
-                msg.sender === 'user'
-                  ? 'bg-third text-fourth'
-                  : 'bg-second text-fourth'
-              }`}
+              className={`max-w-[75%] rounded-lg px-3 py-2 text-sm ${msg.sender === 'user' ? 'bg-third text-fourth' : 'bg-second text-fourth'}`}
             >
               {msg.text}
             </p>
           </div>
         ))}
+
+        {isLoading && (
+          <div className="flex items-start gap-2">
+            <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-fourth text-first">
+              <Bot size={14} />
+            </div>
+            <div className="flex items-center gap-1 rounded-lg bg-second px-3 py-2 text-sm text-fourth">
+              <Loader2 size={16} className="animate-spin" />
+              <span>Thinking...</span>
+            </div>
+          </div>
+        )}
       </div>
 
       <div className="flex gap-2 border-t border-third/30 p-3">
