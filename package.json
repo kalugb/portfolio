@@ -16,7 +16,7 @@
   "main": "index.js",
   "scripts": {
     "frontend": "cd frontend && npm run dev",
-    "backend": "cd backend && venv\\Scripts\\activate.bat && uvicorn route:app --reload",
+    "backend": "cd backend && uv run uvicorn route:app --reload",
     "backend:vercel": "cd backend && uvicorn route:app",
     "dev": "concurrently \"npm run backend\" \"npm run frontend\"",
     "prod": "concurrently \"npm run backend:vercel\" \"npm run frontend\""
