@@ -1,0 +1,22 @@
+{
+  "name": "portfolio",
+  "version": "1.0.0",
+  "description": "",
+  "homepage": "https://github.com/kalugb/portfolio#readme",
+  "bugs": {
+    "url": "https://github.com/kalugb/portfolio/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kalugb/portfolio.git"
+  },
+  "license": "ISC",
+  "author": "",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "frontend": "cd frontend && npm run dev",
+    "backend": "cd backend && venv\\Scripts\\activate.bat && uvicorn route:app --reload",
+    "dev": "concurrently \"npm run backend\" \"npm run frontend\""
+  }
+}
