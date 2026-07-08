@@ -1,0 +1,30 @@
+[
+  {
+    "id": 1,
+    "title": "Hackathon Winner",
+    "description": "Led a team of four to build an AI-powered accessibility tool, winning first place among 40+ teams at a regional university hackathon.",
+    "date": "2024",
+    "image": ""
+  },
+  {
+    "id": 2,
+    "title": "Dean's List",
+    "description": "Recognized for academic excellence with a GPA above 3.8 for three consecutive semesters in Computer Science.",
+    "date": "2023",
+    "image": ""
+  },
+  {
+    "id": 3,
+    "title": "Open Source Contributor",
+    "description": "Contributed bug fixes and documentation improvements to several popular open-source React libraries on GitHub.",
+    "date": "2023",
+    "image": ""
+  },
+  {
+    "id": 4,
+    "title": "Tech Lead — Capstone Project",
+    "description": "Managed development of a full-stack inventory management system adopted by a local nonprofit organization.",
+    "date": "2022",
+    "image": ""
+  }
+]

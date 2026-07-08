@@ -1,0 +1,14 @@
+[
+  {
+    "id": 1,
+    "platform": "GitHub",
+    "url": "https://github.com/username",
+    "icon": "Github"
+  },
+  {
+    "id": 2,
+    "platform": "LinkedIn",
+    "url": "https://linkedin.com/in/username",
+    "icon": "Linkedin"
+  }
+]

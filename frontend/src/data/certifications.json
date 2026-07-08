@@ -1,0 +1,44 @@
+[
+  {
+    "id": 1,
+    "name": "AWS Certified Cloud Practitioner",
+    "issuer": "Amazon Web Services",
+    "date": "2024",
+    "image": ""
+  },
+  {
+    "id": 2,
+    "name": "Meta Front-End Developer",
+    "issuer": "Meta (Coursera)",
+    "date": "2023",
+    "image": ""
+  },
+  {
+    "id": 3,
+    "name": "Google IT Support Professional",
+    "issuer": "Google (Coursera)",
+    "date": "2023",
+    "image": ""
+  },
+  {
+    "id": 4,
+    "name": "CompTIA Security+",
+    "issuer": "CompTIA",
+    "date": "2022",
+    "image": ""
+  },
+  {
+    "id": 5,
+    "name": "Microsoft Azure Fundamentals",
+    "issuer": "Microsoft",
+    "date": "2022",
+    "image": ""
+  },
+  {
+    "id": 6,
+    "name": "Professional Scrum Master I",
+    "issuer": "Scrum.org",
+    "date": "2021",
+    "image": ""
+  }
+]
