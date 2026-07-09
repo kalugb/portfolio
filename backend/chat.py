@@ -6,39 +6,68 @@ import sys
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 load_dotenv()
 
+from backend.embedding import EmbeddingGenerator
+
 NVIDIA_NIM_API_KEY = os.getenv("NVIDIA_NIM_API_KEY")
 NVIDIA_NIM_LLM_MODEL_NAME = os.getenv("NVIDIA_NIM_LLM_MODEL_NAME")
 NVIDIA_NIM_EMBEDDING_MODEL_NAME = os.getenv("NVIDIA_NIM_EMBEDDING_MODEL_NAME")
 NVIDIA_NIM_API_URL = os.getenv("NVIDIA_NIM_API_URL")
 
-def get_chat_response(message: str) -> str:
-    """
-    Placeholder chat logic.
-    Replace this with real logic (LLM call, DB lookup, etc.) later.
-    """
-    return f"This is a placeholder response to: '{message}'"
+class ChatService:
+    def __init__(self):
+        self.embedding_generator = None
+        self.llm_client = None
+        
+    @classmethod
+    async def create(cls):
+        self = cls()
+        
+        self.embedding_generator = await EmbeddingGenerator.create()
+        self.llm_client = OpenAI(
+            base_url=NVIDIA_NIM_API_URL,
+            api_key=NVIDIA_NIM_API_KEY
+        )
+        
+        return self
 
-def llm(user_input: str) -> str:
-    sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-    load_dotenv()
+    async def get_embedding(self, user_input: str) -> list:
+        embeddings = await self.embedding_generator.generate_embedding(user_input)
+        
+        return embeddings
 
-    client = OpenAI(
-        base_url=NVIDIA_NIM_API_URL,
-        api_key=NVIDIA_NIM_API_KEY
-    )
 
-    completion = client.chat.completions.create(
-        model=NVIDIA_NIM_LLM_MODEL_NAME,
-        messages=[{"role": "user", "content": user_input}],
-        temperature=1,
-        top_p=0.95,
-        max_tokens=16384,
-        extra_body={"chat_template_kwargs": {"enable_thinking": False}, "reasoning_budget": 16384},
-        stream=False
-    )
+    async def llm(self, user_input: str) -> str:
+        sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+        load_dotenv()
 
-    message = completion.choices[0].message
-    
-    final_msg = message.content.split("</think>")[1] if "</think>" in message.content else message.content
-    
-    return final_msg
+
+        completion = self.llm_client.chat.completions.create(
+            model=NVIDIA_NIM_LLM_MODEL_NAME,
+            messages=[{"role": "user", "content": user_input}],
+            temperature=1,
+            top_p=0.95,
+            max_tokens=16384,
+            extra_body={"chat_template_kwargs": {"enable_thinking": False}, "reasoning_budget": 16384},
+            stream=False
+        )
+
+        message = completion.choices[0].message
+        
+        final_msg = message.content.split("</think>")[1] if "</think>" in message.content else message.content
+        
+        return final_msg
+
+
+if __name__ == "__main__":
+    import asyncio
+
+    async def main():
+        user_input = "Hello, how are you?"
+        chat_service = await ChatService.create()
+        response = await chat_service.llm(user_input)
+        print("Chat Response:", response)
+
+        embedding = await chat_service.get_embedding(user_input)
+        print("Embedding:", embedding)
+
+    asyncio.run(main())
