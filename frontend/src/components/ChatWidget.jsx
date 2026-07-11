@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { MessageCircle, X } from 'lucide-react'
 import AIChatbotTab from './AIChatbotTab'
 import TalkToMeTab from './TalkToMeTab'
@@ -11,6 +11,33 @@ const tabs = [
 function ChatWidget() {
   const [isOpen, setIsOpen] = useState(false)
   const [activeTab, setActiveTab] = useState('chat')
+  const [isGenerating, setIsGenerating] = useState(false)
+  const [hasGenerated, setHasGenerated] = useState(false)
+
+  useEffect(() => {
+    if (!isOpen && !hasGenerated && !isGenerating) {
+      setIsGenerating(true)
+      generateMockResponse().finally(() => {
+        setIsGenerating(false)
+        setHasGenerated(true)
+      })
+    }
+  }, [isOpen, hasGenerated, isGenerating])
+
+  const generateMockResponse = async () => {
+    const mockResponses = [
+      'Hello! I\'m your AI assistant. How can I help you today?',
+      'Welcome to our chatbot! Feel free to ask me any questions.',
+      'Hi there! I\'m here to assist you. What would you like to discuss?'
+    ]
+    const randomResponse = mockResponses[Math.floor(Math.random() * mockResponses.length)]
+    await new Promise(resolve => setTimeout(resolve, 1000))
+    localStorage.setItem('chatbotInitialMessage', JSON.stringify({
+      sender: 'bot',
+      text: randomResponse,
+      timestamp: Date.now()
+    }))
+  }
 
   return (
     <>

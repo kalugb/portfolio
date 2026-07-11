@@ -5,9 +5,17 @@ import axios from 'axios'
 const STORAGE_KEY = 'ai_chatbot_messages'
 
 const savedMessages = sessionStorage.getItem(STORAGE_KEY)
+const initialMessage = localStorage.getItem('chatbotInitialMessage')
+
+// Clear the initial message from localStorage after reading it
+if (initialMessage) {
+  localStorage.removeItem('chatbotInitialMessage')
+}
 
 const chatStore = {
-  messages: savedMessages ? JSON.parse(savedMessages) : [],
+  messages: savedMessages 
+    ? JSON.parse(savedMessages)
+    : (initialMessage ? [JSON.parse(initialMessage)] : []),
   isLoading: false,
   listeners: new Set(),
 }
