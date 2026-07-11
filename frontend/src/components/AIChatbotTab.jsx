@@ -4,7 +4,6 @@ import axios from 'axios'
 
 const STORAGE_KEY = 'ai_chatbot_messages'
 
-// ---- module-level store: lives outside React, survives widget unmount ----
 const savedMessages = sessionStorage.getItem(STORAGE_KEY)
 
 const chatStore = {
@@ -21,6 +20,13 @@ function notify() {
 function subscribe(listener) {
   chatStore.listeners.add(listener)
   return () => chatStore.listeners.delete(listener)
+}
+
+function clearChat() {
+  sessionStorage.removeItem(STORAGE_KEY)
+  chatStore.messages = []
+  chatStore.isLoading = false
+  notify()
 }
 
 const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
@@ -121,7 +127,7 @@ function AIChatbotTab() {
         </div>
       )}
 
-      <div className="flex gap-2 border-t border-third/30 p-3">
+      <div className="flex gap-2 border-t border-third/30 p-2">
         <input
           type="text"
           value={input}
@@ -134,9 +140,17 @@ function AIChatbotTab() {
           type="button"
           onClick={handleSend}
           aria-label="Send message"
-          className="flex items-center justify-center rounded-lg bg-fourth px-3 py-2 text-first transition-opacity duration-200 hover:opacity-90"
+          className="flex items-center justify-center rounded-lg bg-fourth px-3 py-2 text-first transition-opacity duration-200 hover:opacity-90 hover:cursor-pointer"
         >
           <Send size={18} />
+        </button>
+        <button
+          type="button"
+          onClick={clearChat}
+          aria-label="Clear chat"
+          className="flex items-center justify-center rounded-lg bg-third/40 px-3 py-2 text-first transition-opacity duration-200 hover:opacity-80 hover:cursor-pointer"
+        >
+          Clear chat
         </button>
       </div>
     </div>

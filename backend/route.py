@@ -37,6 +37,7 @@ class ContactRequest(BaseModel):
     name: str
     email: str
     phone_num: str
+    message: str = None 
     
 class ContactResponse(BaseModel):
     reply: str
@@ -58,10 +59,11 @@ async def talk_to_me(request: ContactRequest):
     name = request.name
     email = request.email
     phone_num = request.phone_num
+    message = request.message if hasattr(request, 'message') else None  # Handle optional message field
 
-    print(f"Received talk_to_me request: name={name}, email={email}, phone_num={phone_num}")
-    
-    return ContactResponse(reply=f"Received your information: name={name}, email={email}, phone_num={phone_num}")
+    print(f"Received talk_to_me request: name={name}, email={email}, phone_num={phone_num}, message={message}")
+
+    return ContactResponse(reply=f"Received your information: name={name}, email={email}, phone_num={phone_num}, message={message}")
 
 @app.get("/")
 async def root():

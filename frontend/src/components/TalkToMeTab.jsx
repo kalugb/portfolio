@@ -2,7 +2,7 @@ import { useState } from 'react'
 import axios from 'axios'
 
 function TalkToMeTab() {
-  const [formData, setFormData] = useState({ name: '', email: '', phone_num: '' })
+  const [formData, setFormData] = useState({ name: '', email: '', phone_num: '', message: '' })
   const [errors, setErrors] = useState({})
   const [postSentMessage, setPostSentMessage] = useState(false)
 
@@ -53,7 +53,7 @@ function TalkToMeTab() {
   return (
     <>
       { !postSentMessage ? (
-        <form onSubmit={handleSubmit} className="flex h-full flex-col gap-4 p-4">
+        <form onSubmit={handleSubmit} className="flex h-full flex-col gap-4 overflow-y-auto p-4">
           <div>
             <label htmlFor="contact-name" className="mb-1 block text-sm font-medium text-fourth">
               Name
@@ -97,14 +97,28 @@ function TalkToMeTab() {
               value={formData.phone_num}
               onChange={handleChange}
               className={inputClass}
-              placeholder="+1 (555) 000-0000"
+              placeholder="+60123456789"
             />
             {errors.phone_num && <p className="mt-1 text-xs text-red-600">{errors.phone_num}</p>}
           </div>
 
+          <div>
+            <label htmlFor="contact-message" className="mb-1 block text-sm font-medium text-fourth">
+              Message
+            </label>
+            <textarea
+              id="contact-message"
+              name="message"
+              value={formData.message}
+              onChange={handleChange}
+              className={inputClass + ' h-24 resize-none'}
+              placeholder="Your message... (Optional)"
+            />
+          </div>
+
           <button
             type="submit"
-            className="mt-auto rounded-lg bg-fourth px-4 py-2 text-sm font-medium text-first transition-opacity duration-200 hover:opacity-90"
+            className="mt-auto rounded-lg bg-fourth px-4 py-2 text-sm font-medium text-first transition-opacity duration-200 hover:opacity-90 hover:cursor-pointer"
           >
             Submit
           </button>
@@ -112,12 +126,12 @@ function TalkToMeTab() {
         ) : (
           <div className="flex h-full flex-col items-center justify-center gap-4 p-4 text-center">
             <h2 className="text-lg font-semibold text-fourth">Thank you!</h2>
-            <p className="text-sm text-fourth">Your information has been submitted successfully.</p>
+            <p className="text-sm text-fourth">Hey {formData.name}, your message has been sent successfully! I will get back to you soon.</p>
 
             <div>
-              <button className="mt-auto rounded-lg bg-fourth px-4 py-2 text-sm font-medium text-first transition-opacity duration-200 hover:opacity-90" 
+              <button className="mt-auto rounded-lg bg-fourth px-4 py-2 text-sm font-medium text-first transition-opacity duration-200 hover:opacity-90 hover:cursor-pointer"
                 onClick={sendMessageAgain}>
-                Send Contact Informatio Again
+                Send Contact Information Again
               </button>
             </div>
           </div>
