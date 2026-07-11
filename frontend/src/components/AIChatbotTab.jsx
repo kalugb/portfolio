@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
-import { Bot, Loader2, Send, User } from 'lucide-react'
+import { Bot, Loader2, Send, User, X } from 'lucide-react'
 import axios from 'axios'
 
 const STORAGE_KEY = 'ai_chatbot_messages'
@@ -24,6 +24,7 @@ function subscribe(listener) {
 
 function clearChat() {
   sessionStorage.removeItem(STORAGE_KEY)
+  localStorage.removeItem('chatbotInitialMessage')
   chatStore.messages = []
   chatStore.isLoading = false
   notify()
@@ -80,7 +81,7 @@ function AIChatbotTab() {
   }
 
   const handleKeyDown = (e) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
+    if (e.key === 'Enter' && !e.ctrlKey && !e.shiftKey) {
       e.preventDefault()
       handleSend()
     }
@@ -127,31 +128,35 @@ function AIChatbotTab() {
         </div>
       )}
 
-      <div className="flex gap-2 border-t border-third/30 p-2">
-        <input
-          type="text"
+      <div className="flex flex-col gap-2 border-t border-third/30 p-2">
+        <textarea
           value={input}
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={handleKeyDown}
           placeholder="Type a message..."
-          className="flex-1 rounded-lg border border-third/40 bg-first px-3 py-2 text-sm text-fourth outline-none transition-colors duration-200 focus:border-third"
+          className="w-full rounded-lg border border-third/40 bg-first px-3 py-2 text-sm text-fourth outline-none transition-colors duration-200 focus:border-third h-10 max-h-32 resize-none overflow-y-auto"
         />
-        <button
-          type="button"
-          onClick={handleSend}
-          aria-label="Send message"
-          className="flex items-center justify-center rounded-lg bg-fourth px-3 py-2 text-first transition-opacity duration-200 hover:opacity-90 hover:cursor-pointer"
-        >
-          <Send size={18} />
-        </button>
-        <button
-          type="button"
-          onClick={clearChat}
-          aria-label="Clear chat"
-          className="flex items-center justify-center rounded-lg bg-third/40 px-3 py-2 text-first transition-opacity duration-200 hover:opacity-80 hover:cursor-pointer"
-        >
-          Clear chat
-        </button>
+        <div className="flex gap-2">
+          <button
+            type="button"
+            onClick={clearChat}
+            aria-label="Clear chat"
+            className="flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-red-500 text-first transition-opacity duration-200 hover:bg-red-600 hover:cursor-pointer mr-auto"
+          >
+            <X size={18} />
+            <span>Clear chat</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={handleSend}
+            aria-label="Send message"
+            className="flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-fourth text-first transition-opacity duration-200 hover:opacity-90 hover:cursor-pointer ml-auto"
+          >
+            <Send size={18} />
+            <span>Send</span>
+          </button>
+        </div>
       </div>
     </div>
   )
