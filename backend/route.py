@@ -13,13 +13,13 @@ from backend.embedding import EmbeddingGenerator
 
 chat_service = None
 embedding_generator = None
-mongodb_client = None
+mongodb_db = None
 
 @asynccontextmanager
 async def init_items(app: FastAPI):
-    global chat_service, mongodb_client, embedding_generator
+    global chat_service, mongodb_db, embedding_generator
     chat_service = await ChatService.create()
-    mongodb_client = await get_mongo_client()
+    mongodb_db = await get_mongo_client()
     embedding_generator = await EmbeddingGenerator.create()
     
     print("Chat service, MongoDB client, and embedding generator initialized.")
