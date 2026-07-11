@@ -5,17 +5,9 @@ import axios from 'axios'
 const STORAGE_KEY = 'ai_chatbot_messages'
 
 const savedMessages = sessionStorage.getItem(STORAGE_KEY)
-const initialMessage = localStorage.getItem('chatbotInitialMessage')
-
-// Clear the initial message from localStorage after reading it
-if (initialMessage) {
-  localStorage.removeItem('chatbotInitialMessage')
-}
 
 const chatStore = {
-  messages: savedMessages 
-    ? JSON.parse(savedMessages)
-    : (initialMessage ? [JSON.parse(initialMessage)] : []),
+  messages: savedMessages ? JSON.parse(savedMessages) : [],
   isLoading: false,
   listeners: new Set(),
 }
@@ -32,7 +24,6 @@ function subscribe(listener) {
 
 function clearChat() {
   sessionStorage.removeItem(STORAGE_KEY)
-  localStorage.removeItem('chatbotInitialMessage')
   chatStore.messages = []
   chatStore.isLoading = false
   notify()
@@ -49,7 +40,7 @@ async function sendMessage(text) {
   notify()
 
   try {
-    const res = await axios.post('/api/temp_chat_test', { message: trimmed })
+    const res = await axios.post('/api/chat', { message: trimmed })
 
     await delay(5000)
 
