@@ -2,16 +2,27 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from contextlib import asynccontextmanager
+import sys
+import os
 
-from chat import ChatService
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+from backend.chat import ChatService
+from backend.db import get_mongo_client
+from backend.embedding import EmbeddingGenerator
 
 chat_service = None
 embedding_generator = None
+mongodb_client = None
 
 @asynccontextmanager
 async def init_items(app: FastAPI):
-    global chat_service
+    global chat_service, mongodb_client, embedding_generator
     chat_service = await ChatService.create()
+    mongodb_client = await get_mongo_client()
+    embedding_generator = await EmbeddingGenerator.create()
+    
+    print("Chat service, MongoDB client, and embedding generator initialized.")
     
     yield
 
@@ -59,7 +70,7 @@ async def talk_to_me(request: ContactRequest):
     name = request.name
     email = request.email
     phone_num = request.phone_num
-    message = request.message if hasattr(request, 'message') else None  # Handle optional message field
+    message = request.message if hasattr(request, 'message') else None
 
     print(f"Received talk_to_me request: name={name}, email={email}, phone_num={phone_num}, message={message}")
 

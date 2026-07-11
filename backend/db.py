@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 load_dotenv()
 
-def get_mongo_client() -> MongoClient:
+async def get_mongo_client() -> MongoClient:
     mongo_uri = os.getenv("MONGO_URI")
     database_name = os.getenv("MONGO_DB_NAME")
     collection_name = os.getenv("MONGO_COLLECTION_NAME")
