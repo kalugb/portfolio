@@ -4,44 +4,73 @@ import axios from 'axios'
 
 const STORAGE_KEY = 'ai_chatbot_messages'
 
+// ---- module-level store: lives outside React, survives widget unmount ----
+const savedMessages = sessionStorage.getItem(STORAGE_KEY)
+
+const chatStore = {
+  messages: savedMessages ? JSON.parse(savedMessages) : [],
+  isLoading: false,
+  listeners: new Set(),
+}
+
+function notify() {
+  sessionStorage.setItem(STORAGE_KEY, JSON.stringify(chatStore.messages))
+  chatStore.listeners.forEach((listener) => listener())
+}
+
+function subscribe(listener) {
+  chatStore.listeners.add(listener)
+  return () => chatStore.listeners.delete(listener)
+}
+
+const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
+
+async function sendMessage(text) {
+  const trimmed = text.trim()
+  if (!trimmed) return
+
+  chatStore.messages = [...chatStore.messages, { sender: 'user', text: trimmed }]
+  chatStore.isLoading = true
+  notify()
+
+  try {
+    const res = await axios.post('/api/temp_chat_test', { message: trimmed })
+
+    await delay(5000)
+
+    chatStore.messages = [...chatStore.messages, { sender: 'bot', text: res.data.reply }]
+  } catch (err) {
+    console.error('Chat request failed:', err)
+    chatStore.messages = [
+      ...chatStore.messages,
+      { sender: 'bot', text: 'Oops! Something went wrong. Please try again later.' },
+    ]
+  } finally {
+    chatStore.isLoading = false
+    notify()
+  }
+}
+
 function AIChatbotTab() {
-  const [messages, setMessages] = useState(() => {
-    const saved = sessionStorage.getItem(STORAGE_KEY)
-    return saved
-      ? JSON.parse(saved)
-      : []
-  })
-  const [input, setInput] = useState('')
-  const [isLoading, setIsLoading] = useState(false)
+  const [, forceRender] = useState(0)
   const messagesEndRef = useRef(null)
 
   useEffect(() => {
-    sessionStorage.setItem(STORAGE_KEY, JSON.stringify(messages))
-  }, [messages])
+    const unsubscribe = subscribe(() => forceRender((n) => n + 1))
+    return unsubscribe
+  }, [])
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
-  }, [messages])
+  }, [chatStore.messages, chatStore.isLoading])
 
-  const handleSend = async () => {
+  const [input, setInput] = useState('')
+
+  const handleSend = () => {
     const trimmed = input.trim()
     if (!trimmed) return
-
-    setMessages((prev) => [...prev, { sender: 'user', text: trimmed }])
     setInput('')
-    setIsLoading(true)
-
-    try {
-      const res = await axios.post("/api/temp_chat_test", { message: trimmed })
-
-      setMessages((prev) => [...prev, { sender: 'bot', text: res.data.reply }])
-    } catch (err) {
-      console.error(err)
-
-      setMessages((prev) => [...prev, { sender: 'bot', text: 'Oops! Something went wrong. Please try again later.' }])
-    } finally {
-      setIsLoading(false)
-    }
+    sendMessage(trimmed)
   }
 
   const handleKeyDown = (e) => {
@@ -53,9 +82,9 @@ function AIChatbotTab() {
 
   return (
     <div className="flex h-full flex-col">
-      {messages.length > 0 ? (
+      {chatStore.messages.length > 0 ? (
         <div className="flex-1 space-y-3 overflow-y-auto p-4">
-          {messages.map((msg, i) => (
+          {chatStore.messages.map((msg, i) => (
             <div
               key={i}
               className={`flex items-start gap-2 ${msg.sender === 'user' ? 'flex-row-reverse' : ''}`}
@@ -73,7 +102,7 @@ function AIChatbotTab() {
             </div>
           ))}
 
-                  {isLoading && (
+          {chatStore.isLoading && (
             <div className="flex items-start gap-2">
               <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-fourth text-first">
                 <Bot size={14} />
