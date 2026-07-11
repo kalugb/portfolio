@@ -18,6 +18,9 @@ class ChatService:
         self.embedding_generator = None
         self.llm_client = None
         
+    async def testing_response(self, user_input: str) -> str:
+        return f"Echo: {user_input}"
+        
     @classmethod
     async def create(cls):
         self = cls()
@@ -30,17 +33,7 @@ class ChatService:
         
         return self
 
-    async def get_embedding(self, user_input: str) -> list:
-        embeddings = await self.embedding_generator.generate_embedding(user_input)
-        
-        return embeddings
-
-
     async def llm(self, user_input: str) -> str:
-        sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-        load_dotenv()
-
-
         completion = self.llm_client.chat.completions.create(
             model=NVIDIA_NIM_LLM_MODEL_NAME,
             messages=[{"role": "user", "content": user_input}],
