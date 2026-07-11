@@ -80,6 +80,16 @@ function AIChatbotTab() {
     sendMessage(trimmed)
   }
 
+  const formatMessageWithLineBreaks = (text) => {
+    if (!text) return ''
+    return text.split('\n').map((line, index) => (
+      <span key={index}>
+        {line}
+        {index < text.split('\n').length - 1 && <br />}
+      </span>
+    ))
+  }
+
   const handleKeyDown = (e) => {
     if (e.key === 'Enter' && !e.ctrlKey && !e.shiftKey) {
       e.preventDefault()
@@ -101,11 +111,11 @@ function AIChatbotTab() {
               >
                 {msg.sender === 'user' ? <User size={14} /> : <Bot size={14} />}
               </div>
-              <p
-                className={`max-w-[75%] rounded-lg px-3 py-2 text-sm ${msg.sender === 'user' ? 'bg-third text-fourth' : 'bg-second text-fourth'}`}
+              <div
+                className={`max-w-[75%] rounded-lg px-3 py-2 text-sm ${msg.sender === 'user' ? 'bg-third text-fourth' : 'bg-second text-fourth'} whitespace-pre-wrap break-words`}
               >
-                {msg.text}
-              </p>
+                {formatMessageWithLineBreaks(msg.text)}
+              </div>
             </div>
           ))}
 
