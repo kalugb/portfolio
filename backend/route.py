@@ -30,11 +30,18 @@ app.add_middleware(
 class ChatRequest(BaseModel):
     message: str
 
-
 class ChatResponse(BaseModel):
     reply: str
+    
+class ContactRequest(BaseModel):
+    name: str
+    email: str
+    phone_num: str
+    
+class ContactResponse(BaseModel):
+    reply: str
 
-
+# chatbot
 @app.post("/api/chat", response_model=ChatResponse)
 async def llm_chat(request: ChatRequest):
     reply = await chat_service.llm(request.message)
@@ -45,6 +52,16 @@ async def temp_chat_test(request: ChatRequest):
     reply = await chat_service.testing_response(request.message)
     return ChatResponse(reply=reply)
 
+# talk to me section
+@app.post("/api/talk_to_me", response_model=ContactResponse)
+async def talk_to_me(request: ContactRequest):
+    name = request.name
+    email = request.email
+    phone_num = request.phone_num
+
+    print(f"Received talk_to_me request: name={name}, email={email}, phone_num={phone_num}")
+    
+    return ContactResponse(reply=f"Received your information: name={name}, email={email}, phone_num={phone_num}")
 
 @app.get("/")
 async def root():
