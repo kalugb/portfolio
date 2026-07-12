@@ -14,6 +14,8 @@ async def get_mongo_client():
         raise ValueError("MONGO_URI environment variable is not set.")
     
     client = MongoClient(mongo_uri)
+    _ = client.admin.command("ping")  # Check if the MongoDB connection is alive
+    
     db = client[database_name]
     
     return db

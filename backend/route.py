@@ -23,6 +23,8 @@ async def init_items(app: FastAPI):
     mongodb_db = await get_mongo_client()
     embedding_generator = await EmbeddingGenerator.create()
     
+    mongodb_db.command("ping")  # Check if the MongoDB connection is alive
+    
     print("Chat service, MongoDB client, and embedding generator initialized.")
     
     yield
