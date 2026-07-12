@@ -35,7 +35,7 @@ def insert_contact_info(
         return False
 
 
-def vector_search(
+async def rag_pipeline(
     mongodb_client: pymongo.MongoClient,
     embedding_vector: list,
     query_text: str,

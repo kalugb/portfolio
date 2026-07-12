@@ -10,7 +10,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from backend.chat import ChatService
 from backend.db.db_init import get_mongo_client
 from backend.embeddings.embedding import EmbeddingGenerator
-from backend.db.db_ops import vector_search, insert_contact_info
+from backend.db.db_ops import insert_contact_info
 
 chat_service = None
 embedding_generator = None
@@ -59,7 +59,7 @@ class ContactResponse(BaseModel):
 # chatbot
 @app.post("/api/chat", response_model=ChatResponse)
 async def llm_chat(request: ChatRequest):
-    reply = await chat_service.llm(request.message)
+    reply = await chat_service.llm(request.message, mongodb_client=mongodb_db)
     return ChatResponse(reply=reply)
 
 @app.post("/api/temp_chat_test", response_model=ChatResponse)
