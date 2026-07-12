@@ -117,7 +117,7 @@ function AIChatbotTab() {
                 {msg.sender === 'user' ? <User size={14} /> : <Bot size={14} />}
               </div>
               <div
-                className={`max-w-[75%] rounded-lg px-3 py-2 text-sm ${msg.sender === 'user' ? 'bg-third text-fourth' : 'bg-second text-fourth'} whitespace-pre-wrap break-words`}
+                className={`max-w-[75%] rounded-lg px-3 py-2 text-sm ${msg.sender === 'user' ? 'bg-third text-fourth' : 'bg-second text-fourth'} whitespace-pre-wrap wrap-break-words`}
               >
                 {formatMessageWithLineBreaks(msg.text)}
               </div>
