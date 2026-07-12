@@ -1,10 +1,12 @@
 import { useState } from 'react'
 import axios from 'axios'
+import { Loader2 } from 'lucide-react'
 
 function TalkToMeTab() {
   const [formData, setFormData] = useState({ name: '', email: '', phone_num: '', message: '' })
   const [errors, setErrors] = useState({})
   const [postSentMessage, setPostSentMessage] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
 
   const handleChange = (e) => {
     const { name, value } = e.target
@@ -32,6 +34,8 @@ function TalkToMeTab() {
       return
     }
 
+    setIsLoading(true)
+
     try {
       const res = await axios.post('/api/talk_to_me', formData)
       console.log('Form submitted successfully:', res.data.reply)
@@ -44,6 +48,8 @@ function TalkToMeTab() {
         console.error('Server responded with:', err.response.status)
         console.error("Response data:", err.response.data)
       }
+    } finally {
+      setIsLoading(false)
     }
   }
 
@@ -118,9 +124,17 @@ function TalkToMeTab() {
 
           <button
             type="submit"
-            className="mt-auto rounded-lg bg-fourth px-4 py-2 text-sm font-medium text-first transition-opacity duration-200 hover:opacity-90 hover:cursor-pointer"
+            disabled={isLoading}
+            className="mt-auto rounded-lg bg-fourth px-4 py-2 text-sm font-medium text-first transition-opacity duration-200 hover:opacity-90 hover:cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
           >
-            Submit
+            {isLoading ? (
+              <>
+                <Loader2 size={16} className="animate-spin" />
+                <span>Processing...</span>
+              </>
+            ) : (
+              'Submit'
+            )}
           </button>
         </form>
         ) : (

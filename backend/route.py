@@ -8,8 +8,9 @@ import os
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from backend.chat import ChatService
-from backend.db import get_mongo_client
-from backend.embedding import EmbeddingGenerator
+from backend.db.db_init import get_mongo_client
+from backend.embeddings.embedding import EmbeddingGenerator
+from backend.db.db_ops import vector_search, insert_contact_info
 
 chat_service = None
 embedding_generator = None
@@ -71,8 +72,21 @@ async def talk_to_me(request: ContactRequest):
     email = request.email
     phone_num = request.phone_num
     message = request.message if hasattr(request, 'message') else None
-
-    print(f"Received talk_to_me request: name={name}, email={email}, phone_num={phone_num}, message={message}")
+    
+    if name is None or email is None or phone_num is None:
+        return ContactResponse(reply="Error: Missing required fields (name, email, phone_num).")
+    
+    # Insert contact info into MongoDB
+    try:
+        _ = insert_contact_info(
+            mongodb_client=mongodb_db,
+            name=name,
+            email=email,
+            phone_num=phone_num,
+            message=message
+        )
+    except Exception as e:
+        return ContactResponse(reply=f"Error inserting contact info into MongoDB: {str(e)}")
 
     return ContactResponse(reply=f"Received your information: name={name}, email={email}, phone_num={phone_num}, message={message}")
 

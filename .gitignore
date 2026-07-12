@@ -5,3 +5,7 @@ backend/__pycache__
 node_modules
 
 data/
+
+*/*/__pycache__
+
+backend/init_embeddings
