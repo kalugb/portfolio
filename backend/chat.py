@@ -6,7 +6,7 @@ import sys
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 load_dotenv()
 
-from backend.embedding import EmbeddingGenerator
+from backend.embeddings.embedding import EmbeddingGenerator
 
 NVIDIA_NIM_API_KEY = os.getenv("NVIDIA_NIM_API_KEY")
 NVIDIA_NIM_LLM_MODEL_NAME = os.getenv("NVIDIA_NIM_LLM_MODEL_NAME")
@@ -60,7 +60,9 @@ if __name__ == "__main__":
         response = await chat_service.llm(user_input)
         print("Chat Response:", response)
 
-        embedding = await chat_service.get_embedding(user_input)
+        embedding_generator = await EmbeddingGenerator.create()
+        embedding = await embedding_generator.generate_embedding(user_input)
         print("Embedding:", embedding)
+        print("Embedding Length:", len(embedding))
 
     asyncio.run(main())
