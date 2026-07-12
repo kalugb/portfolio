@@ -3,17 +3,21 @@ import { Bot, Loader2, Send, User, X } from 'lucide-react'
 import axios from 'axios'
 
 const STORAGE_KEY = 'ai_chatbot_messages'
+const HISTORY_STORAGE_KEY = 'ai_chatbot_history'
 
 const savedMessages = sessionStorage.getItem(STORAGE_KEY)
+const savedHistory = sessionStorage.getItem(HISTORY_STORAGE_KEY)
 
 const chatStore = {
   messages: savedMessages ? JSON.parse(savedMessages) : [],
+  history: savedHistory ? JSON.parse(savedHistory) : [], // {role, content} pairs sent to/from backend
   isLoading: false,
   listeners: new Set(),
 }
 
 function notify() {
   sessionStorage.setItem(STORAGE_KEY, JSON.stringify(chatStore.messages))
+  sessionStorage.setItem(HISTORY_STORAGE_KEY, JSON.stringify(chatStore.history))
   chatStore.listeners.forEach((listener) => listener())
 }
 
@@ -24,12 +28,12 @@ function subscribe(listener) {
 
 function clearChat() {
   sessionStorage.removeItem(STORAGE_KEY)
+  sessionStorage.removeItem(HISTORY_STORAGE_KEY)
   chatStore.messages = []
+  chatStore.history = []
   chatStore.isLoading = false
   notify()
 }
-
-const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
 
 async function sendMessage(text) {
   const trimmed = text.trim()
@@ -40,11 +44,13 @@ async function sendMessage(text) {
   notify()
 
   try {
-    const res = await axios.post('/api/chat', { message: trimmed })
-
-    await delay(5000)
+    const res = await axios.post('/api/chat', {
+      message: trimmed,
+      history: chatStore.history, // send prior turns so backend has context
+    })
 
     chatStore.messages = [...chatStore.messages, { sender: 'bot', text: res.data.reply }]
+    chatStore.history = res.data.history // backend returns the updated history
   } catch (err) {
     console.error('Chat request failed:', err)
     chatStore.messages = [

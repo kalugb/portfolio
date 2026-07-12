@@ -42,9 +42,9 @@ async def rag_pipeline(
     collection_name: str = "about",
     index_name: str = "vector_index",
     vector_field: str = "question_embeddings",
-    text_field: str = "question",
-    top_k: int = 5,
-    candidate_pool: int = 50,
+    text_field: str = "answer",
+    top_k: int = 2,
+    candidate_pool: int = 10,
     alpha: float = 0.5,
 ) -> list:
     try:
@@ -98,7 +98,17 @@ async def rag_pipeline(
 
         candidates.sort(key=lambda d: d["hybrid_score"], reverse=True)
 
-        return candidates[:top_k]
+        using_candidates = candidates[:top_k]
+        context = []
+        
+        for doc in using_candidates:
+            context.append({
+                "answer": doc.get(text_field, ""),
+                "score": doc.get("hybrid_score", 0.0)
+            })
+            
+        return context
+        
 
     except Exception as e:
         print(f"Error performing vector search: {e}")

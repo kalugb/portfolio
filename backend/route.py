@@ -43,9 +43,11 @@ app.add_middleware(
 
 class ChatRequest(BaseModel):
     message: str
+    history: list = []
 
 class ChatResponse(BaseModel):
     reply: str
+    history: list
     
 class ContactRequest(BaseModel):
     name: str
@@ -59,8 +61,13 @@ class ContactResponse(BaseModel):
 # chatbot
 @app.post("/api/chat", response_model=ChatResponse)
 async def llm_chat(request: ChatRequest):
-    reply = await chat_service.llm(request.message, mongodb_client=mongodb_db)
-    return ChatResponse(reply=reply)
+    reply, updated_history = await chat_service.llm(
+        request.message, 
+        mongodb_client=mongodb_db, 
+        history=request.history
+    )
+    
+    return ChatResponse(reply=reply, history=updated_history)
 
 @app.post("/api/temp_chat_test", response_model=ChatResponse)
 async def temp_chat_test(request: ChatRequest):
