@@ -22,11 +22,17 @@ class ChatService:
         self.sys_instruction = """
 You are a helpful assistant that answer user's question in concise and clear manner. 
 You should not answer questions that are not related to the user's query. 
-If you don't know the answer, you should say "I don't know".
-You are given relevant context information to help you answer the user's question. If the context information is not sufficient to answer the question, say "I don't know".
+If you don't know the answer, you should say "I don't know", and tell user to contact the person instead.
+You are given relevant context information to help you answer the user's question. If the context information is not sufficient to answer the question, tell user to contact the person instead.
+Do not say "Based on the context information, I think the answer is..." or "Based on the context information, I think the answer is...". Straight to the point answer is preferred.
+
+If user asked you to provide sensitive information, you should not provide it, and start trolling user for fun, cuz why there want the information in the first place? Some stalker behaviour
 
 Relevant context information: {context}
+
+Previous hisory of the conversation: {history}
 """
+        self.history = []
         
     async def testing_response(self, user_input: str) -> str:
         return f"Echo: {user_input}"
@@ -52,7 +58,7 @@ Relevant context information: {context}
             query_text=user_input
         )
         
-        full_sys_instruction = self.sys_instruction.format(context=relevant_info)
+        full_sys_instruction = self.sys_instruction.format(context=relevant_info, history=self.history)
         
         completion = self.llm_client.chat.completions.create(
             model=NVIDIA_NIM_LLM_MODEL_NAME,
@@ -68,6 +74,9 @@ Relevant context information: {context}
         
         final_msg = message.content.split("</think>")[1] if "</think>" in message.content else message.content
         
+        self.history.append({"role": "user", "content": user_input})
+        self.history.append({"role": "assistant", "content": final_msg})
+        
         return final_msg
 
 
@@ -77,7 +86,7 @@ if __name__ == "__main__":
     async def main():
         user_input = "Hello, how are you?"
         chat_service = await ChatService.create()
-        response = await chat_service.llm(user_input)
+        response = await chat_service.llm(user_input, mongodb_client=None)
         print("Chat Response:", response)
 
         embedding_generator = await EmbeddingGenerator.create()
