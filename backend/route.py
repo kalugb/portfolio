@@ -8,7 +8,6 @@ import os
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from backend.chat import ChatService
-from backend.db.db_init import get_mongo_client
 from backend.embeddings.embedding import EmbeddingGenerator
 from backend.db.db_ops import insert_contact_info
 
@@ -21,24 +20,24 @@ async def init_items(app: FastAPI):
     global chat_service, mongodb_db, embedding_generator
     chat_service = await ChatService.create()
     embedding_generator = await EmbeddingGenerator.create()
-    
-    try:
-        mongodb_db = await get_mongo_client()
-        print("MongoDB client initialized successfully.")
-    except Exception as e:
-        print(f"Failed to connect to MongoDB: {e}")
-        mongodb_db = None
-    
-    print("Chat service, MongoDB client, and embedding generator initialized.")
-    
+
+    if os.getenv("MONGODB_URI") and not os.getenv("MONGODB_DATA_API_URL"):
+        from backend.db.db_init import get_mongo_client
+        try:
+            mongodb_db = await get_mongo_client()
+            print("MongoDB client initialized successfully.")
+        except Exception as e:
+            print(f"Failed to connect to MongoDB: {e}")
+            mongodb_db = None
+
+    print("Chat service initialized.")
     yield
 
 app = FastAPI(lifespan=init_items)
 
-# Allow your React dev server to call this API
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173"],  # adjust for Vite/CRA port (remove the hardcoded url later)
+    allow_origins=["http://localhost:5173"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -52,25 +51,25 @@ class ChatRequest(BaseModel):
 class ChatResponse(BaseModel):
     reply: str
     history: list
-    
+
 class ContactRequest(BaseModel):
     name: str
     email: str
     phone_num: str
-    message: str = None 
-    
+    message: str = None
+
 class ContactResponse(BaseModel):
     reply: str
 
-# chatbot
+
 @app.post("/api/chat", response_model=ChatResponse)
 async def llm_chat(request: ChatRequest):
     reply, updated_history = await chat_service.llm(
-        request.message, 
-        mongodb_client=mongodb_db, 
+        request.message,
+        mongodb_client=mongodb_db,
         history=request.history
     )
-    
+
     return ChatResponse(reply=reply, history=updated_history)
 
 @app.post("/api/temp_chat_test", response_model=ChatResponse)
@@ -78,20 +77,18 @@ async def temp_chat_test(request: ChatRequest):
     reply = await chat_service.testing_response(request.message)
     return ChatResponse(reply=reply)
 
-# talk to me section
 @app.post("/api/talk_to_me", response_model=ContactResponse)
 async def talk_to_me(request: ContactRequest):
     name = request.name
     email = request.email
     phone_num = request.phone_num
     message = request.message if hasattr(request, 'message') else None
-    
+
     if name is None or email is None or phone_num is None:
         return ContactResponse(reply="Error: Missing required fields (name, email, phone_num).")
-    
-    # Insert contact info into MongoDB
+
     try:
-        ok = insert_contact_info(
+        ok = await insert_contact_info(
             mongodb_client=mongodb_db,
             name=name,
             email=email,
