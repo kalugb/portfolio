@@ -2,6 +2,7 @@ const navLinks = [
   { label: 'About Me', id: 'about' },
   { label: 'Achievements', id: 'achievements' },
   { label: 'Certifications & Licenses', id: 'certifications' },
+  { label: 'Skills', id: 'skills' },
   { label: 'Contact Info', id: 'contact' },
 ]
 
