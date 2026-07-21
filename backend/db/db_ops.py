@@ -5,8 +5,6 @@ from rank_bm25 import BM25Okapi
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-USE_DATA_API = os.getenv("MONGODB_DATA_API_URL") is not None
-
 
 async def insert_contact_info(
     mongodb_client: pymongo.MongoClient | None,
@@ -15,10 +13,6 @@ async def insert_contact_info(
     phone_num: str,
     message: str = None,
 ) -> bool:
-    if USE_DATA_API:
-        from backend.data_api import data_insert_contact
-        return await data_insert_contact(name, email, phone_num, message)
-
     if mongodb_client is None:
         print("MongoDB client is not available. Cannot insert contact info.")
         return False
@@ -58,14 +52,6 @@ async def rag_pipeline(
     candidate_pool: int = 10,
     alpha: float = 0.5,
 ) -> list:
-    if USE_DATA_API:
-        from backend.data_api import data_rag_pipeline
-        return await data_rag_pipeline(
-            embedding_vector, query_text,
-            collection_name, index_name, vector_field,
-            text_field, top_k, candidate_pool, alpha,
-        )
-
     if mongodb_client is None:
         print("MongoDB client is not available. Skipping RAG pipeline.")
         return []

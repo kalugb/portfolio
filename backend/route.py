@@ -8,6 +8,7 @@ import os
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from backend.chat import ChatService
+from backend.db.db_init import get_mongo_client
 from backend.embeddings.embedding import EmbeddingGenerator
 from backend.db.db_ops import insert_contact_info
 
@@ -21,14 +22,12 @@ async def init_items(app: FastAPI):
     chat_service = await ChatService.create()
     embedding_generator = await EmbeddingGenerator.create()
 
-    if os.getenv("MONGODB_URI") and not os.getenv("MONGODB_DATA_API_URL"):
-        from backend.db.db_init import get_mongo_client
-        try:
-            mongodb_db = await get_mongo_client()
-            print("MongoDB client initialized successfully.")
-        except Exception as e:
-            print(f"Failed to connect to MongoDB: {e}")
-            mongodb_db = None
+    try:
+        mongodb_db = await get_mongo_client()
+        print("MongoDB client initialized successfully.")
+    except Exception as e:
+        print(f"Failed to connect to MongoDB: {e}")
+        mongodb_db = None
 
     print("Chat service initialized.")
     yield
