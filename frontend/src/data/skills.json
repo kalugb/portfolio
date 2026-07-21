@@ -1,0 +1,11 @@
+[
+  { "id": 1, "name": "React", "image": "reactjs.png" },
+  { "id": 2, "name": "JavaScript", "image": "javascript.png" },
+  { "id": 3, "name": "Python", "image": "python.png" },
+  { "id": 4, "name": "PostgreSQL", "image": "postgresql.png" },
+  { "id": 5, "name": "Docker", "image": "docker.png" },
+  { "id": 6, "name": "Tailwind CSS", "image": "tailwind.png" },
+  { "id": 7, "name": "PyTorch", "image": "pytorch.png" },
+  { "id": 8, "name": "MongoDB", "image": "mongodb.png" },
+  { "id": 9, "name": "GitHub", "image": "github.png" }
+]

@@ -9,3 +9,5 @@ data/
 */*/__pycache__
 
 backend/init_embeddings
+
+!frontend/src/data

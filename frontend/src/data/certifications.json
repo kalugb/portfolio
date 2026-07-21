@@ -1,44 +1,37 @@
 [
   {
     "id": 1,
-    "name": "AWS Certified Cloud Practitioner",
-    "issuer": "Amazon Web Services",
-    "date": "2024",
-    "image": ""
+    "name": "Anthropic MCP",
+    "issuer": "Anthropic",
+    "date": "2025",
+    "image": "anthropic_mcp.png"
   },
   {
     "id": 2,
-    "name": "Meta Front-End Developer",
-    "issuer": "Meta (Coursera)",
-    "date": "2023",
-    "image": ""
+    "name": "MongoDB Generative AI",
+    "issuer": "MongoDB",
+    "date": "2025",
+    "image": "mongodb_genai.png"
   },
   {
     "id": 3,
-    "name": "Google IT Support Professional",
-    "issuer": "Google (Coursera)",
-    "date": "2023",
-    "image": ""
+    "name": "MongoDB Python Developer",
+    "issuer": "MongoDB",
+    "date": "2025",
+    "image": "mongodb_python_dev.png"
   },
   {
     "id": 4,
-    "name": "CompTIA Security+",
-    "issuer": "CompTIA",
-    "date": "2022",
-    "image": ""
+    "name": "Introduction to Cybersecurity",
+    "issuer": "Cisco",
+    "date": "2025",
+    "image": "intro_to_cyber.png"
   },
   {
     "id": 5,
-    "name": "Microsoft Azure Fundamentals",
-    "issuer": "Microsoft",
-    "date": "2022",
-    "image": ""
-  },
-  {
-    "id": 6,
-    "name": "Professional Scrum Master I",
-    "issuer": "Scrum.org",
-    "date": "2021",
-    "image": ""
+    "name": "MongoDB DBA",
+    "issuer": "MongoDB",
+    "date": "2025",
+    "image": "mongodb_dba.png"
   }
 ]

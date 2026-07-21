@@ -1,13 +1,25 @@
+import { useState } from 'react'
+import { Expand } from 'lucide-react'
 import certifications from '../data/certifications.json'
 import CertificationsParticles from './particles/CertificationsParticles'
 import ScrollReveal from './ScrollReveal'
+import ImageModal from './ImageModal'
 
-// TODO: Replace cat placeholder URLs with real certification badge images from backend/CDN
-function getPlaceholderImage(id) {
-  return `https://cataas.com/cat?width=400&height=300&t=${id}`
+const IMAGES = import.meta.glob('../assets/certsImages/*.png', {
+  eager: true,
+  query: '?url',
+  import: 'default',
+})
+
+function getImageUrl(filename) {
+  if (!filename) return ''
+  const key = `../assets/certsImages/${filename}`
+  return IMAGES[key] || ''
 }
 
 function Certifications() {
+  const [selectedImage, setSelectedImage] = useState(null)
+
   return (
     <section
       id="certifications"
@@ -26,11 +38,24 @@ function Certifications() {
               key={cert.id}
               className="overflow-hidden rounded-lg bg-second shadow-md transition-transform duration-300 hover:-translate-y-1"
             >
-              <img
-                src={getPlaceholderImage(cert.id)}
-                alt={cert.name}
-                className="h-48 w-full object-cover"
-              />
+              <div className="group relative">
+                <button
+                  onClick={() => setSelectedImage(getImageUrl(cert.image))}
+                  className="block w-full cursor-pointer"
+                >
+                  <img
+                    src={getImageUrl(cert.image)}
+                    alt={cert.name}
+                    className="h-48 w-full object-cover"
+                  />
+                  <div className="absolute inset-0 flex items-center justify-center bg-black/0 transition-colors duration-300 group-hover:bg-black/50">
+                    <span className="flex items-center gap-2 rounded-full bg-white/90 px-4 py-2 text-sm font-medium text-fourth opacity-0 shadow-lg transition-opacity duration-300 group-hover:opacity-100">
+                      <Expand size={16} />
+                      Click to see full view
+                    </span>
+                  </div>
+                </button>
+              </div>
               <div className="p-5">
                 <h3 className="text-lg font-bold text-fourth">{cert.name}</h3>
                 <p className="mt-1 text-sm text-fourth/70">{cert.issuer}</p>
@@ -40,6 +65,14 @@ function Certifications() {
           ))}
         </div>
       </ScrollReveal>
+
+      {selectedImage && (
+        <ImageModal
+          src={selectedImage}
+          alt="Certification image"
+          onClose={() => setSelectedImage(null)}
+        />
+      )}
     </section>
   )
 }
