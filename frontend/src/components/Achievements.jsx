@@ -27,49 +27,52 @@ function Achievements() {
     >
       <AchievementsParticles />
 
-      <ScrollReveal className="relative z-10 mx-auto max-w-6xl">
-        <h2 className="mb-12 text-center text-3xl font-bold text-first md:text-4xl">
-          Achievements And Work Highlights
-        </h2>
+      <div className="relative z-10 mx-auto max-w-6xl">
+        <ScrollReveal>
+          <h2 className="mb-12 text-center text-3xl font-bold text-first md:text-4xl">
+            Achievements And Work Highlights
+          </h2>
+        </ScrollReveal>
 
         <div className="flex flex-col gap-16">
           {achievements.map((item, index) => (
-            <article
-              key={item.id}
-              className={`flex flex-col items-center gap-8 md:flex-row ${
-                index % 2 === 1 ? 'md:flex-row-reverse' : ''
-              }`}
-            >
-              {item.image && (
-                <div className="group relative w-full shrink-0 overflow-hidden rounded-lg shadow-md md:w-1/2">
-                  <button
-                    onClick={() => setSelectedImage(getImageUrl(item.image))}
-                    className="block w-full cursor-pointer"
-                  >
-                    <img
-                      src={getImageUrl(item.image)}
-                      alt={item.title}
-                      className="h-64 w-full object-cover transition-transform duration-300 group-hover:scale-[1.02] md:h-72"
-                    />
-                    <div className="absolute inset-0 flex items-center justify-center bg-black/0 transition-colors duration-300 group-hover:bg-black/50">
-                      <span className="flex items-center gap-2 rounded-full bg-white/90 px-4 py-2 text-sm font-medium text-fourth opacity-0 shadow-lg transition-opacity duration-300 group-hover:opacity-100">
-                        <Expand size={16} />
-                        Click to see full view
-                      </span>
-                    </div>
-                  </button>
-                </div>
-              )}
+            <ScrollReveal key={item.id} direction={index % 2 === 0 ? 'left' : 'right'}>
+              <article
+                className={`flex flex-col items-center gap-8 md:flex-row ${
+                  index % 2 === 1 ? 'md:flex-row-reverse' : ''
+                }`}
+              >
+                {item.image && (
+                  <div className="group relative w-full shrink-0 overflow-hidden rounded-lg shadow-md md:w-1/2">
+                    <button
+                      onClick={() => setSelectedImage(getImageUrl(item.image))}
+                      className="block w-full cursor-pointer"
+                    >
+                      <img
+                        src={getImageUrl(item.image)}
+                        alt={item.title}
+                        className="h-64 w-full object-cover transition-transform duration-300 group-hover:scale-[1.02] md:h-72"
+                      />
+                      <div className="absolute inset-0 flex items-center justify-center bg-black/0 transition-colors duration-300 group-hover:bg-black/50">
+                        <span className="flex items-center gap-2 rounded-full bg-white/90 px-4 py-2 text-sm font-medium text-fourth opacity-0 shadow-lg transition-opacity duration-300 group-hover:opacity-100">
+                          <Expand size={16} />
+                          Click to see full view
+                        </span>
+                      </div>
+                    </button>
+                  </div>
+                )}
 
-              <div className={`${item.image ? 'w-full md:w-1/2' : 'w-full'}`}>
-                <span className="text-sm font-medium text-second">{item.date}</span>
-                <h3 className="mt-1 text-2xl font-bold text-first">{item.title}</h3>
-                <p className="mt-3 leading-relaxed text-first/90">{item.description}</p>
-              </div>
-            </article>
+                <div className={`${item.image ? 'w-full md:w-1/2' : 'w-full'}`}>
+                  <span className="text-sm font-medium text-second">{item.date}</span>
+                  <h3 className="mt-1 text-2xl font-bold text-first">{item.title}</h3>
+                  <p className="mt-3 leading-relaxed text-first/90">{item.description}</p>
+                </div>
+              </article>
+            </ScrollReveal>
           ))}
         </div>
-      </ScrollReveal>
+      </div>
 
       {selectedImage && (
         <ImageModal
