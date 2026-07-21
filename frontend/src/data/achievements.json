@@ -1,30 +1,23 @@
 [
   {
     "id": 1,
-    "title": "Hackathon Winner",
-    "description": "Led a team of four to build an AI-powered accessibility tool, winning first place among 40+ teams at a regional university hackathon.",
-    "date": "2024",
+    "title": "AI Agent",
+    "description": "Build an AI Agent capable of performing tasks such as web searching, perform github operations, debug and edit code, and more. The agent can be customized to perform specific tasks based on user requirements.",
+    "date": "2026",
     "image": "ai_agent.png"
   },
   {
     "id": 2,
-    "title": "Dean's List",
-    "description": "Recognized for academic excellence with a GPA above 3.8 for three consecutive semesters in Computer Science.",
-    "date": "2023",
+    "title": "Top 150 Selected Codex Builders",
+    "description": "Selected as one of the top 150 Codex builders nationwide, building solutions using OpenAI's Codex model to help solve Malaysian real problems",
+    "date": "2026",
     "image": "codex_150_builder.png"
   },
   {
     "id": 3,
-    "title": "Open Source Contributor",
-    "description": "Contributed bug fixes and documentation improvements to several popular open-source React libraries on GitHub.",
-    "date": "2023",
+    "title": "Stock Market Analysis Using Machine Learning",
+    "description": "Developed a machine learning model, involving numerical and NLP models to analyze stock market data and predict stock prices. The model uses historical data, various technical indicators and stock market news to make accurate predictions, helping investors and beginners make informed decisions.",
+    "date": "2026",
     "image": "stock_analysis.png"
-  },
-  {
-    "id": 4,
-    "title": "Tech Lead — Capstone Project",
-    "description": "Managed development of a full-stack inventory management system adopted by a local nonprofit organization.",
-    "date": "2022",
-    "image": ""
   }
 ]

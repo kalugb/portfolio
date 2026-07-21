@@ -29,7 +29,7 @@ function Achievements() {
 
       <ScrollReveal className="relative z-10 mx-auto max-w-6xl">
         <h2 className="mb-12 text-center text-3xl font-bold text-first md:text-4xl">
-          Achievements
+          Achievements And Work Highlights
         </h2>
 
         <div className="flex flex-col gap-16">
