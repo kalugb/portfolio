@@ -20,10 +20,14 @@ mongodb_db = None
 async def init_items(app: FastAPI):
     global chat_service, mongodb_db, embedding_generator
     chat_service = await ChatService.create()
-    mongodb_db = await get_mongo_client()
     embedding_generator = await EmbeddingGenerator.create()
     
-    mongodb_db.command("ping")  # Check if the MongoDB connection is alive
+    try:
+        mongodb_db = await get_mongo_client()
+        print("MongoDB client initialized successfully.")
+    except Exception as e:
+        print(f"Failed to connect to MongoDB: {e}")
+        mongodb_db = None
     
     print("Chat service, MongoDB client, and embedding generator initialized.")
     
