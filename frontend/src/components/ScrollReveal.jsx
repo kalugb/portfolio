@@ -6,15 +6,14 @@ const HIDDEN = {
   right: 'translate-x-24',
 }
 
-function ScrollReveal({ children, className = '', direction = 'up' }) {
+function ScrollReveal({ children, className = '', direction = 'up', duration = 300 }) {
   const [ref, inView] = useInView(0.15)
 
   return (
     <div
       ref={ref}
-      className={`transition-all duration-1000 ease-out ${
-        inView ? 'translate-x-0 translate-y-0 opacity-100' : `${HIDDEN[direction] || HIDDEN.up} opacity-0`
-      } ${className}`}
+      className={`transition-all ease-out ${inView ? 'translate-x-0 translate-y-0 opacity-100' : `${HIDDEN[direction] || HIDDEN.up} opacity-0`} ${className}`}
+      style={{ transitionDuration: `${duration}ms` }}
     >
       {children}
     </div>

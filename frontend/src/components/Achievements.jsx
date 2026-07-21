@@ -36,7 +36,7 @@ function Achievements() {
 
         <div className="flex flex-col gap-16">
           {achievements.map((item, index) => (
-            <ScrollReveal key={item.id} direction={index % 2 === 0 ? 'left' : 'right'}>
+            <ScrollReveal key={item.id} direction={index % 2 === 0 ? 'left' : 'right'} duration={500}>
               <article
                 className={`flex flex-col items-center gap-8 md:flex-row ${
                   index % 2 === 1 ? 'md:flex-row-reverse' : ''
