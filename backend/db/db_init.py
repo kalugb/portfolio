@@ -1,3 +1,4 @@
+import ssl
 from pymongo import MongoClient
 import os
 import sys
@@ -13,8 +14,13 @@ async def get_mongo_client():
     if not mongo_uri:
         raise ValueError("MONGO_URI environment variable is not set.")
     
-    client = MongoClient(mongo_uri, tlsInsecure=True, tlsAllowInvalidCertificates=True)
-    _ = client.admin.command("ping")  # Check if the MongoDB connection is alive
+    ssl_context = ssl.create_default_context()
+    ssl_context.check_hostname = False
+    ssl_context.verify_mode = ssl.CERT_NONE
+    ssl_context.minimum_version = ssl.TLSVersion.TLSv1_2
+    
+    client = MongoClient(mongo_uri, tls=True, ssl_context=ssl_context)
+    _ = client.admin.command("ping")
     
     db = client[database_name]
     
