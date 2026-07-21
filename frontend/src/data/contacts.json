@@ -1,12 +1,10 @@
 [
   {
-    "id": 1,
     "platform": "GitHub",
     "url": "https://github.com/kalugb",
     "icon": "Github"
   },
   {
-    "id": 2,
     "platform": "LinkedIn",
     "url": "https://www.linkedin.com/in/daniel-yong-67b223386",
     "icon": "Linkedin"

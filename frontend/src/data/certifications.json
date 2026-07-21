@@ -1,37 +1,32 @@
 [
   {
-    "id": 1,
+    "name": "MongoDB DBA",
+    "issuer": "MongoDB",
+    "date": "2025",
+    "image": "mongodb_dba.png"
+  },
+  {
     "name": "Anthropic MCP",
     "issuer": "Anthropic",
     "date": "2025",
     "image": "anthropic_mcp.png"
   },
   {
-    "id": 2,
     "name": "MongoDB Generative AI",
     "issuer": "MongoDB",
     "date": "2025",
     "image": "mongodb_genai.png"
   },
   {
-    "id": 3,
     "name": "MongoDB Python Developer",
     "issuer": "MongoDB",
     "date": "2025",
     "image": "mongodb_python_dev.png"
   },
   {
-    "id": 4,
     "name": "Introduction to Cybersecurity",
     "issuer": "Cisco",
     "date": "2025",
     "image": "intro_to_cyber.png"
-  },
-  {
-    "id": 5,
-    "name": "MongoDB DBA",
-    "issuer": "MongoDB",
-    "date": "2025",
-    "image": "mongodb_dba.png"
   }
 ]

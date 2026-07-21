@@ -1,20 +1,17 @@
 [
   {
-    "id": 1,
     "title": "AI Agent",
     "description": "Build an AI Agent capable of performing tasks such as web searching, perform github operations, debug and edit code, and more. The agent can be customized to perform specific tasks based on user requirements.",
     "date": "2026",
     "image": "ai_agent.png"
   },
   {
-    "id": 2,
     "title": "Top 150 Selected Codex Builders",
     "description": "Selected as one of the top 150 Codex builders nationwide, building solutions using OpenAI's Codex model to help solve Malaysian real problems",
     "date": "2026",
     "image": "codex_150_builder.png"
   },
   {
-    "id": 3,
     "title": "Stock Market Analysis Using Machine Learning",
     "description": "Developed a machine learning model, involving numerical and NLP models to analyze stock market data and predict stock prices. The model uses historical data, various technical indicators and stock market news to make accurate predictions, helping investors and beginners make informed decisions.",
     "date": "2026",
