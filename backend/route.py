@@ -91,7 +91,7 @@ async def talk_to_me(request: ContactRequest):
     
     # Insert contact info into MongoDB
     try:
-        _ = insert_contact_info(
+        ok = insert_contact_info(
             mongodb_client=mongodb_db,
             name=name,
             email=email,
@@ -100,6 +100,9 @@ async def talk_to_me(request: ContactRequest):
         )
     except Exception as e:
         return ContactResponse(reply=f"Error inserting contact info into MongoDB: {str(e)}")
+
+    if not ok:
+        return ContactResponse(reply="Could not save your information. Please try again later.")
 
     return ContactResponse(reply=f"Received your information: name={name}, email={email}, phone_num={phone_num}, message={message}")
 

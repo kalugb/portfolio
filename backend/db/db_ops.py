@@ -7,11 +7,15 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 
 def insert_contact_info(
-    mongodb_client: pymongo.MongoClient, 
+    mongodb_client: pymongo.MongoClient | None, 
     name: str, 
     email: str, 
     phone_num: str, 
     message: str = None) -> bool:
+    if mongodb_client is None:
+        print("MongoDB client is not available. Cannot insert contact info.")
+        return False
+    
     try:
         collection = mongodb_client["contact"]
         contact_info = {
@@ -36,7 +40,7 @@ def insert_contact_info(
 
 
 async def rag_pipeline(
-    mongodb_client: pymongo.MongoClient,
+    mongodb_client: pymongo.MongoClient | None,
     embedding_vector: list,
     query_text: str,
     collection_name: str = "about",
@@ -47,6 +51,10 @@ async def rag_pipeline(
     candidate_pool: int = 10,
     alpha: float = 0.5,
 ) -> list:
+    if mongodb_client is None:
+        print("MongoDB client is not available. Skipping RAG pipeline.")
+        return []
+    
     try:
         collection = mongodb_client[collection_name]
 
