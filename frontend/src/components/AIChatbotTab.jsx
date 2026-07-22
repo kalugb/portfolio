@@ -66,6 +66,8 @@ async function sendMessage(text) {
 function AIChatbotTab() {
   const [, forceRender] = useState(0)
   const messagesEndRef = useRef(null)
+  const [input, setInput] = useState('')
+  const [loadingText, setLoadingText] = useState('')
 
   useEffect(() => {
     const unsubscribe = subscribe(() => forceRender((n) => n + 1))
@@ -76,11 +78,23 @@ function AIChatbotTab() {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
   }, [chatStore.messages, chatStore.isLoading])
 
-  const [input, setInput] = useState('')
+  useEffect(() => {
+    if (!chatStore.isLoading) {
+      setLoadingText('')
+      return
+    }
+    const frames = ['.', '..', '...', '....', '.....', '......']
+    let i = 0
+    const id = setInterval(() => {
+      setLoadingText(`AI is responding${frames[i % frames.length]}`)
+      i++
+    }, 500)
+    return () => clearInterval(id)
+  }, [chatStore.isLoading])
 
   const handleSend = () => {
     const trimmed = input.trim()
-    if (!trimmed) return
+    if (!trimmed || chatStore.isLoading) return
     setInput('')
     sendMessage(trimmed)
   }
@@ -129,7 +143,7 @@ function AIChatbotTab() {
               <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-fourth text-first">
                 <Bot size={14} />
               </div>
-              <div className="flex items-center gap-1 rounded-lg bg-second px-3 py-2 text-sm text-fourth">
+              <div className="flex items-center gap-1 rounded-lg bg-gray-300 px-3 py-2 text-sm text-gray-700">
                 <Loader2 size={16} className="animate-spin" />
                 <span>Thinking...</span>
               </div>
@@ -144,19 +158,23 @@ function AIChatbotTab() {
       )}
 
       <div className="flex flex-col gap-2 border-t border-third/30 p-2">
-        <textarea
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          onKeyDown={handleKeyDown}
-          placeholder="Type a message..."
-          className="w-full rounded-lg border border-third/40 bg-first px-3 py-2 text-sm text-fourth outline-none transition-colors duration-200 focus:border-third h-10 max-h-32 resize-none overflow-y-auto"
-        />
+        <div className="relative">
+          <textarea
+            value={chatStore.isLoading ? '' : input}
+            onChange={(e) => setInput(e.target.value)}
+            onKeyDown={handleKeyDown}
+            placeholder={chatStore.isLoading ? loadingText : 'Type a message...'}
+            disabled={chatStore.isLoading}
+            className="w-full rounded-lg border border-third/40 px-3 py-2 text-sm outline-none transition-colors duration-200 focus:border-third h-10 max-h-32 resize-none overflow-y-auto disabled:cursor-not-allowed disabled:bg-gray-200 disabled:text-gray-500 bg-first text-fourth"
+          />
+        </div>
         <div className="flex gap-2">
           <button
             type="button"
             onClick={clearChat}
+            disabled={chatStore.isLoading}
             aria-label="Clear chat"
-            className="flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-red-500 text-first transition-opacity duration-200 hover:bg-red-600 hover:cursor-pointer mr-auto"
+            className="flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-red-500 text-first transition-opacity duration-200 hover:bg-red-600 hover:cursor-pointer mr-auto disabled:cursor-not-allowed disabled:opacity-50"
           >
             <X size={18} />
             <span>Clear chat</span>
@@ -165,8 +183,9 @@ function AIChatbotTab() {
           <button
             type="button"
             onClick={handleSend}
+            disabled={chatStore.isLoading}
             aria-label="Send message"
-            className="flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-fourth text-first transition-opacity duration-200 hover:opacity-90 hover:cursor-pointer ml-auto"
+            className="flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-fourth text-first transition-opacity duration-200 hover:opacity-90 hover:cursor-pointer ml-auto disabled:cursor-not-allowed disabled:opacity-50"
           >
             <Send size={18} />
             <span>Send</span>
