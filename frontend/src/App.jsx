@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { Analytics } from '@vercel/analytics/react'
 import Navbar from './components/Navbar'
 import Hero from './components/Hero'
 import Achievements from './components/Achievements'
@@ -21,6 +21,7 @@ function App() {
         <ContactFooter />
       </main>
       <ChatWidget />
+      <Analytics />
     </>
   )
 }
